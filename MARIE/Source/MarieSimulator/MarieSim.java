@@ -51,8 +51,8 @@ public class MarieSim extends JFrame {
   public static final String      formfeed = "\014";
   public static final String fileSeparator = System.getProperty("file.separator");
 
-  public static final String HELP_FILE =          // Help file name.
-                                  "MarieSimulator"+fileSeparator+"msimhlp1.txt";
+  public static final String HELP_FILE = "msimhlp1.txt";  // Help file name.
+                                 
   public static final JFileChooser exeFileChooser = 
                                    new JFileChooser(System.getProperty("user.dir")); 
 
@@ -518,9 +518,9 @@ public class MarieSim extends JFrame {
   
   JPanel    infoPanel = new JPanel();       // Information panel.
   JLabel  pgmTitle = new JLabel("MARIE Machine Simulator - Version 1.2");
-  JLabel copyRight = new JLabel("Copyright (c) 2003");
+  JLabel copyRight = new JLabel("Copyright (c) 2003, 2006");
   JLabel accompany = new JLabel("To accompany:");
-  JLabel   theBook = new JLabel("The Essentials of Computer Organization and Architecture      ");
+  JLabel   theBook = new JLabel("The Essentials of Computer Organization and Architecture 2/e  ");
   JLabel   authors = new JLabel("By Linda M. Null & Julia M. Lobur");
   JLabel publisher = new JLabel("Jones & Bartlett Publishers");
   
