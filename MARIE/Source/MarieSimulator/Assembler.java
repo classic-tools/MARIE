@@ -1,12 +1,13 @@
 // File:        Assembler.java
 // Author:      Julie Lobur
-// SDK Version: 1.4.1
-// Date:        November 9, 2002
-// Notice:      Copyright 2003
+// SDK Version: 1.4.1, 5.0
+// Date:        November 9, 2002, June 29, 2008, June 23, 2010
+// Notice:      Copyright 2003, 2008, 2010
 //              This code may be freely used for noncommercial purposes.
 package MarieSimulator;
 import java.io.*;
 import java.util.*;
+@SuppressWarnings("unchecked") // This line is needed because we are not using generics.
 
 public class Assembler implements Serializable {
 /****************************************************************************************************
@@ -45,6 +46,11 @@ public class Assembler implements Serializable {
 *                            This decision meant that some fancy footwork had to be done when       *
 *                            converting between radices, but overall fewer difficulties were        *
 *                            presented by using this approach.                                      *
+*                                                                                                   *
+*                                                                                                   *
+*  June 23, 2010: Added instructions LoadI and StoreI.                                              *
+*                                                                                                   *
+*                                                                                                   *
 ****************************************************************************************************/
 /*
   Notes:   Labels are case sensitive, otherwise codeline is case insensitive.
@@ -54,6 +60,7 @@ public class Assembler implements Serializable {
              so 0 -> 7FFF =      0 to 32767 and 
                 8000 -> 0 = -32768 to 0.
 */
+
 /* --                                                                                 -- */
 /* --   File definitions.                                                             -- */
 /* --                                                                                 -- */
@@ -176,6 +183,8 @@ void loadInstructionSet() {
  instructionSet.put("CLEAR",      new Instruction("CLEAR",      (byte) 10,  false));
  instructionSet.put("ADDI",       new Instruction("ADDI",       (byte) 11,  true));
  instructionSet.put("JUMPI",      new Instruction("JUMPI",      (byte) 12,  true));
+ instructionSet.put("LOADI",      new Instruction("LOADI",      (byte) 13,  true));
+ instructionSet.put("STOREI",     new Instruction("STOREI",     (byte) 14,  true)); 
  instructionSet.put("DEC",        new Instruction("DEC",        (byte) DEC, true));
  instructionSet.put("OCT",        new Instruction("OCT",        (byte) OCT, true));
  instructionSet.put("HEX",        new Instruction("HEX",        (byte) HEX, true));

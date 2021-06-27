@@ -1,4 +1,4 @@
-/ Example 4.1
+/ Example 4.1 
 	ORG 100
 If,	Load	 X	/Load the first value	
 	Subt	 Y	/Subtract the value of Y, store result in AC	

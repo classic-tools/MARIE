@@ -1,4 +1,4 @@
-	ORG 100		/ Example 4.1
+	ORG 100		/ Example 4.1 
 	Load	 Addr	/Load address of first number to be added		
 	Store	 Next	/Store this address is our Next pointer		
 	Load 	 Num	/Load the number of items to be added		

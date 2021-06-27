@@ -1,7 +1,7 @@
 // File:        MarieEditor.java
 // Author:      Julie Lobur
-// SDK Version: 1.4.1
-// Date:        November 10, 2002
+// SDK Version: 1.4.1, 5.1
+// Date:        November 10, 2002, August 6, 2008
 // Notice:      This program augments the MARIE machine simulator, but can be used for many
 //              other purposes.  This code may be freely used for noncommercial purposes.
 package MarieSimulator;
@@ -723,7 +723,7 @@ public class MarieEditor extends JFrame {
       return;                                      // this saves an ugly display.
     }
     try { 
-          listingFileViewer.show();
+          listingFileViewer.setVisible(true);
           listingFileViewer.requestFocus();
     }
     catch (Exception e) {
@@ -737,7 +737,7 @@ public class MarieEditor extends JFrame {
           Point location = getLocation();
           listingFileViewer.setLocation(((myFrameSize.width+(location.x/3)) / 2), 
                                          (location.y / 3));
-          listingFileViewer.show();
+          listingFileViewer.setVisible(true);
     }
   } // showListing()
 
@@ -749,7 +749,7 @@ public class MarieEditor extends JFrame {
 *  whether TextFileViewer should call a System.exit(0) when it terminates.                *
 ******************************************************************************************/
    try { 
-          helpViewer01.show();
+          helpViewer01.setVisible(true);
           helpViewer01.requestFocus();
     }
     catch (Exception e) {
@@ -758,7 +758,7 @@ public class MarieEditor extends JFrame {
       Dimension tfvSize = helpViewer01.getPreferredSize();
       Point location = getLocation();
       helpViewer01.setLocation(((myFrameSize.width+(location.x/2)) / 2), (location.y / 2));
-      helpViewer01.show();
+      helpViewer01.setVisible(true);
     }
   } // editHelp()
 
@@ -768,7 +768,7 @@ public class MarieEditor extends JFrame {
 *  Same function as editHelp(), but use the instruction set help file instead.            *
 ******************************************************************************************/
     try { 
-          helpViewer02.show();
+          helpViewer02.setVisible(true);
           helpViewer02.requestFocus();
     }
     catch (Exception e) {
@@ -777,7 +777,7 @@ public class MarieEditor extends JFrame {
           Dimension tfvSize = helpViewer02.getPreferredSize();
           Point location = getLocation();
           helpViewer02.setLocation(((myFrameSize.width+(location.x/3)) / 2), (location.y / 3));
-          helpViewer02.show();
+          helpViewer02.setVisible(true);
     } // catch
   } // instructionSetHelp() 
 
@@ -799,6 +799,7 @@ public class MarieEditor extends JFrame {
 *  Before closing the simulator, we ask the user to confirm the decision (to avoid        *
 *  accidental selection).  The confirmation is done through a JOptionPane popup set       *
 *  to default to "Yes."                                                                   *
+*  6 August 2008: Added option to allow user to save a moddified file on exit.            *
 ******************************************************************************************/
     JFrame closingFrame = new JFrame("Confirm Editor Quit");
     closingFrame.setIconImage(Toolkit.getDefaultToolkit()
@@ -809,7 +810,18 @@ public class MarieEditor extends JFrame {
                                       JOptionPane.QUESTION_MESSAGE, null,
                                        new Object[] {"Yes", "No"}, "Yes");
     if (option == JOptionPane.YES_OPTION) {
-       try { 
+       if (fileUpdated) {                            
+        int value =JOptionPane.showConfirmDialog(this,    // Check to see if file modified.
+                       "Save changes?","Text Edit",       // If so, give option to save. 
+                       JOptionPane.YES_NO_CANCEL_OPTION);
+        switch (value){
+          case JOptionPane.YES_OPTION: saveFile();
+                                       break;
+          case JOptionPane.CANCEL_OPTION: return;        // If the save is canceled,
+          default: ; // do nothing.                      // So is the exit request.
+        } // switch
+       } // if fileUpdated
+       try {
              listingFileViewer.dispose();         // Before we go, kill listing window
        }                                          // if it exists.
        catch (Exception e) {

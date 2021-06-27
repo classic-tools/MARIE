@@ -1,8 +1,8 @@
 // File:        MarieDPath.java
 // Author:      Julie Lobur
-// JDK Version: 1.4.1
-// Date:        April 30, 2003
-// Notice:      Copyright 2003 Julia M. Lobur 
+// JDK Version: 1.4.1, 5.0
+// Date:        April 30, 2003, June 29, 2008, June 23, 2010
+// Notice:      Copyright 2003, 2008 Julia M. Lobur 
 //              This code may be freely used for noncommercial purposes.
 package MarieSimulator;
 import java.io.*;
@@ -17,6 +17,7 @@ import javax.swing.event.*;
 import javax.print.*; 
 import javax.print.attribute.*; 
 import javax.print.attribute.standard.*; 
+@SuppressWarnings("unchecked") // This line is needed because we are not using generics.
 
 public class MarieDPath extends JFrame {
 /******************************************************************************************
@@ -48,6 +49,9 @@ public class MarieDPath extends JFrame {
 *                                                                                         *
 *  A good bit of the code for this simulator was taken directly, or is slghtly modified   *
 *  code from MarieSim.java.                                                               *
+*                                                                                         *
+*  June 23, 2010: Added microops for LOADI and STOREI.                                    *
+*                                                                                         *
 ******************************************************************************************/
 
 /* --                                                                                 -- */
@@ -312,7 +316,7 @@ public class MarieDPath extends JFrame {
       delayPane.add(milliseconds);                          // and buttons to the main
       delayPane.add(buttons);                               // frame.
       setLocation(200, 75);
-      show();
+      setVisible(true);
     } // DelayFrame()
   } // DelayFrame
 
@@ -328,13 +332,14 @@ public class MarieDPath extends JFrame {
   JLabel    logoLabel = new JLabel();           // JLabel to hold our picture.
   ImageIcon      logo = new ImageIcon();        // The picture for the label.
   
-  JPanel    infoPanel = new JPanel();       // Information panel.
-  JLabel  pgmTitle = new JLabel("MARIE DataPath Simulator - Version 1.0");
-  JLabel copyRight = new JLabel("Copyright (c) 2003, 2006");
-  JLabel accompany = new JLabel("To accompany:");
-  JLabel   theBook = new JLabel("The Essentials of Computer Organization and Architecture 2/e  ");
-  JLabel   authors = new JLabel("By Linda M. Null & Julia M. Lobur");
-  JLabel publisher = new JLabel("Jones & Bartlett Publishers");
+  JPanel  infoPanel = new JPanel();       // Information panel.
+  JLabel   pgmTitle = new JLabel("MARIE DataPath Simulator - Version 3.0");
+  JLabel  copyRight = new JLabel("Copyright (c) 2003, 2006, 2010");
+  JLabel  accompany = new JLabel("To accompany:");
+  JLabel    theBook = new JLabel("The Essentials of Computer Organization and Architecture 3/e  ");
+  JLabel    authors = new JLabel("By Linda M. Null & Julia M. Lobur");
+  JLabel  publisher = new JLabel("Jones & Bartlett Publishers");
+  JLabel permission = new JLabel("May be freely distributed for educational purposes.");
   
   JPanel okBttonPanel = new JPanel();       // Button panel.
   JButton    okButton = new JButton("Ok");      // And its button.
@@ -362,8 +367,9 @@ public class MarieDPath extends JFrame {
     theBook.setFont(new Font("sanserif", Font.BOLD + Font.ITALIC, 14));
     authors.setFont(new Font("sanserif", 0, 12));
     publisher.setFont(new Font("sanserif", 0, 12)); 
+    permission.setFont(new Font("sanserif", 0, 12));
     infoPanel.setLayout(gridLayout);     
-    gridLayout.setRows(6);
+    gridLayout.setRows(7);
     gridLayout.setColumns(1);
     infoPanel.setBorder(BorderFactory.createEmptyBorder(10, 60, 10, 10));
     
@@ -377,6 +383,7 @@ public class MarieDPath extends JFrame {
     infoPanel.add(theBook, null);
     infoPanel.add(authors, null);
     infoPanel.add(publisher, null);
+    infoPanel.add(permission, null);
     centerPanel.add(infoPanel, BorderLayout.CENTER);
     
     mainPanel.add(centerPanel, BorderLayout.NORTH);
@@ -386,7 +393,7 @@ public class MarieDPath extends JFrame {
     setLocation(75, 75);
     setModal(true);
     pack();
-    show();
+    setVisible(true);
   } // HelpAboutFrame()
   
   protected void processWindowEvent(WindowEvent e) { // Process window closing, anything
@@ -458,6 +465,10 @@ public class MarieDPath extends JFrame {
 *  Technically, these lines should be "wide" data bus type lines, but the wider lines     *
 *  don't look good in the simulator.                                                      *
 *                                                                                         *
+*  The registers are numbered from 001 to 111 from right-to-left. Thus, the IR = 111,     *
+*  OUT = 110, IN = 101, ... MAR = 001. Thus to read from MBR and write to OUT we set      *
+*  the write lines 0, 1, 2 = 1, 1, 0 and read lines 3, 4, 5 = 0, 1, 1. MM is 000.         *
+*                                                                                         *
 *  The conrol unit also places a text string at the center of the graphical simulator     *
 *  area (when a non-null string is passed to the refresh() method).  This string should   *
 *  contain the register transfer language for the microoperation currently executing.     *
@@ -494,8 +505,8 @@ public class MarieDPath extends JFrame {
      }
      g2.setColor(componentLabelColor);
      g2.setFont(new Font("sansserif", Font.BOLD, 10));
-     g2.drawString("Write", 42, 42);    
-     g2.drawString("Read", 42, 156);               
+     g2.drawString("Read", 42, 42);    
+     g2.drawString("Write", 42, 156);               
      g2.setFont(new Font("sansserif", Font.BOLD, 12));
      g2.drawString("Control", 12, 192);
      g2.drawString("Unit", 12, 207);
@@ -1400,7 +1411,7 @@ public class MarieDPath extends JFrame {
 *  JFrame is closed.                                                                      *
 ******************************************************************************************/
      try {
-           delayFrame.show();
+           delayFrame.setVisible(true);
            delayFrame.requestFocus();   
      }
      catch (Exception e) {  
@@ -1418,7 +1429,7 @@ public class MarieDPath extends JFrame {
 *  This method works the same way as displayDelayFrame().  See explanation above.         *
 ******************************************************************************************/
      try {
-           helpViewer.show();
+           helpViewer.setVisible(true);
            helpViewer.requestFocus();
      }
      catch (Exception e) {         
@@ -1430,7 +1441,7 @@ public class MarieDPath extends JFrame {
                        helpViewer = null;
                   } // windowClosing()
               }); // Listener 
-              helpViewer.show();
+              helpViewer.setVisible(true);
      }
   } // displayHelpFrame()
 
@@ -1439,7 +1450,7 @@ public class MarieDPath extends JFrame {
 *  This method works the same way as displayDelayFrame().  See explanation above.         *
 ******************************************************************************************/
      try {
-           helpAboutFrame.show();
+           helpAboutFrame.setVisible(true);
            helpAboutFrame.requestFocus();   
      }
      catch (Exception e) {  
@@ -1452,7 +1463,7 @@ public class MarieDPath extends JFrame {
      }                               
   } //displayHelpAboutFrame()  
   
-    protected void processWindowEvent(WindowEvent e) {  // Overridden JFrame method.
+  protected void processWindowEvent(WindowEvent e) {  // Overridden JFrame method.
 /******************************************************************************************
 *  This overridden JFrame method gives us control over the exit mode taken from the       *
 *  program no matter how the user closes the window.  It simply calls the same exit       *
@@ -1836,11 +1847,11 @@ public class MarieDPath extends JFrame {
     programTable.repaint();
                                // First microoperation: MAR <-- PC                   
     controlUnit.setState(false, controlLines, "(Fetch cycle) MAR <-- PC");   
-    regPC.setState(true);
+    regMAR.setState(true);
     controlLines[0] = 0;         // Set control lines to read PC and write to MAR
     controlLines[1] = 0; 
     controlLines[2] = 1;  
-    regMAR.setState(true);
+    regPC.setState(true);
     controlLines[3] = 0;
     controlLines[4] = 1; 
     controlLines[5] = 0;     
@@ -3047,6 +3058,237 @@ public class MarieDPath extends JFrame {
     dataPathPanel.repaint(); 
   } // jumpI()
    
+   
+    void loadI() {
+  /****************************************************************************************
+  *  This function performs five microoperations:                                         *
+  *     MAR <-- IR[11-0]; MBR <-- M[MAR]; MAR <-- MBR; MBR <-- M[MAR]; and  AC <-- MBR    *
+  *  to carry out an indirect load.                                                       *
+  ****************************************************************************************/
+    int[] controlLines = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    
+    regIR.setState(true);    
+    controlUnit.setState(false, controlLines, "MAR <-- IR[11-0]");   
+    controlLines[0] = 0;         // Set control lines to read IR and write to MAR.
+    controlLines[1] = 0; 
+    controlLines[2] = 1;  
+    controlLines[3] = 1;
+    controlLines[4] = 1; 
+    controlLines[5] = 1;     
+    regMAR.setState(true);             // Place address in MAR.
+    controlUnit.setState(true, controlLines, "");   
+    memory.setState(false, true);      // Turn on bus.
+    dataPathPanel.repaint();
+    waitABit(briefDelay);
+    
+    controlLines[7] = 1;          
+    int addr = regIR.getValue() & 0x0FFF;  // Strip address from instruction.
+    regMAR.setValue(addr);  
+    controlUnit.setState(true, controlLines, "(Decode IR[15-12])");
+    dataPathPanel.repaint();
+    waitABit(briefDelay);
+    
+    regIR.setState(false);             // Turn off IR, control lines, and bus.
+    memory.setState(false, false);
+    controlLines[0] = 0;
+    controlLines[1] = 0; 
+    controlLines[2] = 0;  
+    controlLines[3] = 0;
+    controlLines[4] = 0; 
+    controlLines[5] = 0; 
+    controlUnit.setState(false, controlLines, "");   
+    dataPathPanel.repaint();
+    waitABit(delay);                   // End of microop.
+    
+                                   // Second microoperation: MBR <-- M[MAR]
+    controlUnit.setState(false, controlLines, "MBR <-- M[MAR]");                
+    memory.setState(true, true);     // Turn on memory and connection to MBR.
+    controlLines[1] = 1;
+    controlLines[2] = 1; 
+    regMBR.setState(true);           // Load MBR.
+    controlUnit.setState(true, controlLines, "");          
+    dataPathPanel.repaint();
+    waitABit(briefDelay); 
+    
+    addr = memoryArray[regMAR.getValue()];          // Retrieve target address from
+    regMBR.setValue(addr);                          // memory and place into MBR.
+    regMAR.setState(false);
+    controlLines[7] = 0;
+    dataPathPanel.repaint();
+    waitABit(delay);                   // End of microop.
+    
+                                 // Third microop: MAR <-- MBR.
+    memory.setState(false, true);      // Turn off memory, but keep bus on. 
+    controlLines[0] = 0;               // Set control lines to write to MAR...
+    controlLines[1] = 0; 
+    controlLines[2] = 1; 
+    controlLines[3] = 0;               // ... and read from MBR.
+    controlLines[4] = 1;
+    controlLines[5] = 1;
+    controlLines[7] = 0; 
+    regMAR.setValue(regMBR.getValue());
+    controlUnit.setState(true, controlLines, "MAR <-- MBR");
+    dataPathPanel.repaint();
+    waitABit(briefDelay); 
+    
+                                   // Fourth microoperation: MBR <-- M[MAR]
+    controlUnit.setState(false, controlLines, "MBR <-- M[MAR]");                
+    memory.setState(true, true);     // Turn on memory and connection to MBR.
+    controlLines[1] = 1;
+    controlLines[2] = 1;   
+    regMBR.setState(true);           // Load MBR.
+    regMBR.setValue(memoryArray[regMAR.getValue()]);  
+    controlUnit.setState(true, controlLines, "");          
+    dataPathPanel.repaint();
+    waitABit(briefDelay); 
+    
+                               //  Fifth microoperation: AC <-- MBR. 
+    memory.setState(false, true);      // Turn off memory, but keep bus on. 
+    regMAR.setState(false);
+    controlLines[1] = 0;
+    controlLines[2] = 0;
+    controlLines[7] = 0; 
+    controlLines[6] = 1;            
+    regAC.setState(true);
+    controlUnit.setState(false, controlLines, "AC <-- MBR");    
+    dataPathPanel.repaint(); 
+    waitABit(briefDelay);
+                  
+    regAC.setValue(regMBR.getValue());   // Transfer to AC.
+    dataPathPanel.repaint();
+    waitABit(delay);                  // End of microop.      
+      
+    regPC.setState(false);        // Turn off everything.
+    controlLines[0] = 0;
+    controlLines[1] = 0; 
+    controlLines[2] = 0; 
+    controlLines[3] = 0;
+    controlLines[4] = 0; 
+    controlLines[5] = 0; 
+    controlUnit.setState(false, controlLines, " ");  
+    dataPathPanel.repaint(); 
+  } // loadI()
+   
+   
+  void storeI() {
+  /****************************************************************************************
+  *  This function performs five microoperations:                                         *
+  *     MAR <-- IR[11-0]; MBR <-- M[MAR]; MAR <-- MBR; MBR <-- AC; and  M[MAR] <-- AC     *
+  *  to carry out an indirect load.                                                       *
+  ****************************************************************************************/
+    int[] controlLines = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    
+    regIR.setState(true);    
+    controlUnit.setState(false, controlLines, "MAR <-- IR[11-0]");   
+    controlLines[0] = 0;         // Set control lines to read IR and write to MAR.
+    controlLines[1] = 0; 
+    controlLines[2] = 1;  
+    controlLines[3] = 1;
+    controlLines[4] = 1; 
+    controlLines[5] = 1;     
+    regMAR.setState(true);             // Place address in MAR.
+    controlUnit.setState(true, controlLines, "");   
+    memory.setState(false, true);      // Turn on bus.
+    dataPathPanel.repaint();
+    waitABit(briefDelay);
+    
+    controlLines[7] = 1;          
+    int addr = regIR.getValue() & 0x0FFF;  // Strip address from instruction.
+    regMAR.setValue(addr);  
+    controlUnit.setState(true, controlLines, "(Decode IR[15-12])");
+    dataPathPanel.repaint();
+    waitABit(briefDelay);
+    
+    regIR.setState(false);             // Turn off IR, control lines, and bus.
+    memory.setState(false, false);
+    controlLines[0] = 0;
+    controlLines[1] = 0; 
+    controlLines[2] = 0;  
+    controlLines[3] = 0;
+    controlLines[4] = 0; 
+    controlLines[5] = 0; 
+    controlUnit.setState(false, controlLines, "");   
+    dataPathPanel.repaint();
+    waitABit(delay);                   // End of microop.
+           
+                                   // Second microoperation: MBR <-- M[MAR]
+    controlUnit.setState(false, controlLines, "MBR <-- M[MAR]");                
+    memory.setState(true, true);     // Turn on memory and connection to MBR.
+    controlLines[1] = 1;
+    controlLines[2] = 1; 
+    regMBR.setState(true);           // Load MBR.
+    controlUnit.setState(true, controlLines, "");          
+    dataPathPanel.repaint();
+    waitABit(briefDelay); 
+    
+    addr = memoryArray[regMAR.getValue()];          // Retrieve target address from
+    regMBR.setValue(addr);                          // memory and place into MBR.
+    regMAR.setState(false);
+    controlLines[7] = 0;
+    dataPathPanel.repaint();
+    waitABit(delay);                   // End of microop.
+    
+                                 // Third microop: MAR <-- MBR.
+    memory.setState(false, true);      // Turn off memory, but keep bus on. 
+    controlLines[0] = 0;               // Set control lines to write to MAR...
+    controlLines[1] = 0; 
+    controlLines[2] = 1; 
+    controlLines[3] = 0;               // ... and read from MBR.
+    controlLines[4] = 1;
+    controlLines[5] = 1;
+    controlLines[7] = 0; 
+    controlUnit.setState(true, controlLines, "MAR <-- MBR");
+    regMAR.setValue(regMBR.getValue());
+    dataPathPanel.repaint();
+    waitABit(briefDelay); 
+    
+                                   // Fourth microoperation: MBR <-- M[MAR]
+    controlUnit.setState(false, controlLines, "MBR <-- M[MAR]");                
+    memory.setState(true, true);     // Turn on memory and connection to MBR.
+    controlLines[1] = 1;
+    controlLines[2] = 1; 
+    regMBR.setState(true);           // Load MBR.
+    controlUnit.setState(true, controlLines, "");          
+    dataPathPanel.repaint();
+    waitABit(briefDelay); 
+    
+    regAC.setState(true);          // Fifth microoperation (first part): MBR <-- AC   
+    controlLines[6] = 1;                // Activate control line to load MBR from AC
+    regMBR.setState(true);              // Activate MBR
+    controlUnit.setState(false, controlLines, " MBR <-- AC, M[MAR] <-- MBR");
+    waitABit(delay);
+    dataPathPanel.repaint();   
+           
+    regMBR.setValue(regAC.getValue()); // Activate MBR and move data from AC.
+    dataPathPanel.repaint();
+    waitABit(briefDelay);
+     
+    controlLines[6] = 0;               // Turn off connection between AC and MBR.
+    regAC.setState(false);
+    controlUnit.setState(false, controlLines, "");  // End of first part.
+    
+    controlLines[3] = 0;        // Second part of second microop: M[MAR] <-- MBR.
+    controlLines[4] = 1;               // Set control lines to read MBR.
+    controlLines[5] = 1;
+    controlLines[7] = 1;               // Activate control line between MAR and MM.
+    regMAR.setState(true);
+    controlUnit.setState(true, controlLines, "");  // Engage control unit.  
+    memory.setState(true, true);       // Turn on memory and bus.
+    memoryArray[regMAR.getValue()] = regMBR.getValue();    // Update memory.
+    dataPathPanel.repaint();
+    waitABit(delay);          // Microop complete.      
+      
+    regPC.setState(false);        // Turn off everything.
+    controlLines[0] = 0;
+    controlLines[1] = 0; 
+    controlLines[2] = 0; 
+    controlLines[3] = 0;
+    controlLines[4] = 0; 
+    controlLines[5] = 0; 
+    controlUnit.setState(false, controlLines, " ");  
+    dataPathPanel.repaint(); 
+  } // storeI()
+   
    void execute () {
 /******************************************************************************************
 *   This method is the mainline of the "execute" part of the "fetch-execute" cycle.       *
@@ -3088,6 +3330,10 @@ public class MarieDPath extends JFrame {
        case 11: addI();      
                 break;
        case 12: jumpI();       
+                break;
+       case 13: loadI();       
+                break;
+       case 14: storeI();       
                 break;
       default:
         fatalError = true;

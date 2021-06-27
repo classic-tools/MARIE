@@ -1,8 +1,8 @@
 // File:        MarieSim.java
 // Author:      Julie Lobur
-// JDK Version: 1.3.1
-// Date:        November 7, 2001
-// Notice:      (c) 2003 Julia M. Lobur 
+// JDK Version: 1.3.1, 5.0
+// Date:        November 7, 2001, June 29, 2008, June 23, 2010
+// Notice:      (c) 2003, 2008 Julia M. Lobur 
 //              This code may be freely used for noncommercial purposes.
 package MarieSimulator;
 import java.io.*;
@@ -17,6 +17,7 @@ import javax.swing.event.*;
 import javax.print.*; 
 import javax.print.attribute.*; 
 import javax.print.attribute.standard.*; 
+@SuppressWarnings("unchecked") // This line is needed because we are not using generics.
 
 public class MarieSim extends JFrame {
 /******************************************************************************************
@@ -84,7 +85,9 @@ public class MarieSim extends JFrame {
                                                 false,  // JUMP
                                                 false,  // CLEAR
                                                 true,   // ADDI
-                                                true }; // JUMPI
+                                                true,   // JUMPI
+                                                true,   // LOADI
+                                                true }; // STOREI
 /* --                                                                                 -- */
 /* --  System constants.                                                              -- */
 /* --                                                                                 -- */
@@ -201,27 +204,27 @@ public class MarieSim extends JFrame {
   JPanel         acPanel = new JPanel();            // Small panels to hold the register,
   Register         regAC = new Register(AC);        // its label, and the combo box used to
   JLabel         acLabel = new JLabel();            // set the display mode rendering (base).
-  JComboBox    acModeBox = new JComboBox(base);     // We make 6 of these small panels,
+  JLabel       acModeBox = new JLabel();          // We make 6 of these small panels,
                                                     // one for each register except the
   JPanel         irPanel = new JPanel();            // output register.
   Register         regIR = new Register(IR);
   JLabel         irLabel = new JLabel();
-  JComboBox    irModeBox = new JComboBox(base);
+  JLabel       irModeBox = new JLabel();
 
   JPanel        marPanel = new JPanel();
   Register        regMAR = new Register(MAR);
   JLabel        marLabel = new JLabel();
-  JComboBox   marModeBox = new JComboBox(base);
+  JLabel      marModeBox = new JLabel();
 
   JPanel        mbrPanel = new JPanel();
   Register        regMBR = new Register(MBR);
   JLabel        mbrLabel = new JLabel();
-  JComboBox   mbrModeBox = new JComboBox(base);
+  JLabel      mbrModeBox = new JLabel();
 
   JPanel         pcPanel = new JPanel();
   Register         regPC = new Register(PC);
   JLabel         pcLabel = new JLabel();
-  JComboBox    pcModeBox = new JComboBox(base);
+  JLabel       pcModeBox = new JLabel();
 
   JPanel      inputPanel = new JPanel();
   Register      regINPUT = new Register(INPUT);
@@ -343,7 +346,7 @@ public class MarieSim extends JFrame {
       delayPane.add(milliseconds);                          // and buttons to the main
       delayPane.add(buttons);                               // frame.
       setLocation(200, 75);
-      show();
+      setVisible(true);
     } // DelayFrame()
   } // DelayFrame
 
@@ -500,7 +503,7 @@ public class MarieSim extends JFrame {
       dumpPane.add(endAddr);
       dumpPane.add(buttons);
       setLocation(200, 75);
-      show();
+      setVisible(true);
     } // CoreDumpFrame()
   } // CoreDumpFrame
 
@@ -517,13 +520,13 @@ public class MarieSim extends JFrame {
   ImageIcon      logo = new ImageIcon();        // The picture for the label.
   
   JPanel    infoPanel = new JPanel();       // Information panel.
-  JLabel  pgmTitle = new JLabel("MARIE Machine Simulator - Version 1.3.01");
-  JLabel copyRight = new JLabel("Copyright (c) 2003, 2006");
-  JLabel accompany = new JLabel("To accompany:");
-  JLabel   theBook = new JLabel("The Essentials of Computer Organization and Architecture 2/e  ");
-  JLabel   authors = new JLabel("By Linda M. Null & Julia M. Lobur");
-  JLabel publisher = new JLabel("Jones & Bartlett Publishers");
-  
+  JLabel   pgmTitle = new JLabel("MARIE Machine Simulator - Version 3.00");
+  JLabel  copyRight = new JLabel("Copyright (c) 2003, 2006, 2010");
+  JLabel  accompany = new JLabel("To accompany:");
+  JLabel    theBook = new JLabel("The Essentials of Computer Organization and Architecture 3/e  ");
+  JLabel    authors = new JLabel("By Linda M. Null & Julia M. Lobur");
+  JLabel  publisher = new JLabel("Jones & Bartlett Publishers");
+  JLabel permission = new JLabel("May be freely distributed for educational purposes.");
   JPanel okBttonPanel = new JPanel();       // Button panel.
   JButton    okButton = new JButton("Ok");      // And its button.
 
@@ -550,8 +553,9 @@ public class MarieSim extends JFrame {
     theBook.setFont(new Font("sanserif", Font.BOLD + Font.ITALIC, 14));
     authors.setFont(new Font("sanserif", 0, 12));
     publisher.setFont(new Font("sanserif", 0, 12)); 
+    permission.setFont(new Font("sanserif", 0, 12)); 
     infoPanel.setLayout(gridLayout);     
-    gridLayout.setRows(6);
+    gridLayout.setRows(7);
     gridLayout.setColumns(1);
     infoPanel.setBorder(BorderFactory.createEmptyBorder(10, 60, 10, 10));
     
@@ -565,6 +569,7 @@ public class MarieSim extends JFrame {
     infoPanel.add(theBook, null);
     infoPanel.add(authors, null);
     infoPanel.add(publisher, null);
+    infoPanel.add(permission, null);
     centerPanel.add(infoPanel, BorderLayout.CENTER);
     
     mainPanel.add(centerPanel, BorderLayout.NORTH);
@@ -574,7 +579,7 @@ public class MarieSim extends JFrame {
     setLocation(75, 75);
     setModal(true);
     pack();
-    show();
+    setVisible(true);
   } // HelpAboutFrame()
   
   protected void processWindowEvent(WindowEvent e) { // Process window closing, anything
@@ -1061,15 +1066,12 @@ public class MarieSim extends JFrame {
     regAC.setFont(new Font("Monospaced", 0, 14));
     regAC.setValue(0);
     regAC.setEditable(false);
+    
     acModeBox.setPreferredSize(new Dimension(57, 20));     // Set combo box characteristics
     acModeBox.setBackground(registerForeground);
     acModeBox.setFont(new Font("Dialog", 0, 11));
-    acModeBox.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        int i = acModeBox.getSelectedIndex();
-        regAC.setMode(i);
-      }
-    }); // Listener
+    acModeBox.setText("    (Hex)");
+    
     acPanel.add(acLabel);                        // Add the above components to
     acPanel.add(regAC);                          // the main register panel.
     acPanel.add(acModeBox);
@@ -1091,15 +1093,12 @@ public class MarieSim extends JFrame {
     regIR.setFont(new java.awt.Font("Monospaced", 0, 14));
     regIR.setValue(0);
     regIR.setEditable(false);
+    
     irModeBox.setPreferredSize(new Dimension(57, 20));  
     irModeBox.setBackground(registerForeground);
     irModeBox.setFont(new Font("Dialog", 0, 11));
-    irModeBox.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        int i = irModeBox.getSelectedIndex();
-        regIR.setMode(i);
-      }
-    }); // Listener
+    irModeBox.setText("    (Hex)");
+    
     irPanel.add(irLabel);
     irPanel.add(regIR);
     irPanel.add(irModeBox);
@@ -1121,15 +1120,12 @@ public class MarieSim extends JFrame {
     regMAR.setFont(new Font("Monospaced", 0, 14));
     regMAR.setValue(0);
     regMAR.setEditable(false);
+    
     marModeBox.setPreferredSize(new Dimension(57, 20));  
     marModeBox.setBackground(registerForeground);
     marModeBox.setFont(new Font("Dialog", 0, 11));
-    marModeBox.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        int i = marModeBox.getSelectedIndex();
-        regMAR.setMode(i);
-      }
-    }); // Listener
+    marModeBox.setText("    (Hex)");
+    
     marPanel.add(marLabel);
     marPanel.add(regMAR);
     marPanel.add(marModeBox);
@@ -1151,15 +1147,12 @@ public class MarieSim extends JFrame {
     regMBR.setFont(new Font("Monospaced", 0, 14));
     regMBR.setValue(0);
     regMBR.setEditable(false);
+    
     mbrModeBox.setPreferredSize(new Dimension(57, 20)); 
     mbrModeBox.setBackground(registerForeground);
     mbrModeBox.setFont(new Font("Dialog", 0, 11));
-    mbrModeBox.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        int i = mbrModeBox.getSelectedIndex();
-        regMBR.setMode(i);
-      }
-    }); // Listener
+    mbrModeBox.setText("    (Hex)");   
+ 
     mbrPanel.add(mbrLabel);
     mbrPanel.add(regMBR);
     mbrPanel.add(mbrModeBox);
@@ -1181,15 +1174,12 @@ public class MarieSim extends JFrame {
     regPC.setFont(new Font("Monospaced", 0, 14));
     regPC.setValue(0);
     regPC.setEditable(false);
+    
     pcModeBox.setPreferredSize(new Dimension(57, 20)); 
     pcModeBox.setBackground(registerForeground);
     pcModeBox.setFont(new Font("Dialog", 0, 11));
-    pcModeBox.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        int i = pcModeBox.getSelectedIndex();
-        regPC.setMode(i);
-      }
-    }); // Listener
+    pcModeBox.setText("    (Hex)");
+    
     pcPanel.add(pcLabel);
     pcPanel.add(regPC);
     pcPanel.add(pcModeBox);
@@ -1659,7 +1649,7 @@ public class MarieSim extends JFrame {
 *  notified that the application is done.                                                 *
 ******************************************************************************************/
      try {
-           marieEditor.show(); 
+           marieEditor.setVisible(true); 
            marieEditor.requestFocus();   
      }
      catch (Exception e) {
@@ -1689,7 +1679,7 @@ public class MarieSim extends JFrame {
 *  the frame object after the JFrame is closed.                                           *
 ******************************************************************************************/
      try {
-           delayFrame.show();
+           delayFrame.setVisible(true);
            delayFrame.requestFocus();   
      }
      catch (Exception e) {  
@@ -1707,7 +1697,7 @@ public class MarieSim extends JFrame {
 *  This method works the same way as displayDelayFrame().  See explanation above.         *
 ******************************************************************************************/
      try {
-           helpAboutFrame.show();
+           helpAboutFrame.setVisible(true);
            helpAboutFrame.requestFocus();   
      }
      catch (Exception e) {  
@@ -1725,7 +1715,7 @@ public class MarieSim extends JFrame {
 *  This method works the same way as displayDelayFrame().  See explanation above.         *
 ******************************************************************************************/
      try {
-           dumpViewer.show();
+           dumpViewer.setVisible(true);
            dumpViewer.requestFocus();
      }
      catch (Exception e1) {
@@ -1749,7 +1739,7 @@ public class MarieSim extends JFrame {
 *  This method works the same way as displayDelayFrame().  See explanation above.         *
 ******************************************************************************************/
      try {
-           symbolTable.show();
+           symbolTable.setVisible(true);
            symbolTable.requestFocus();   
      }
      catch (Exception e) {         
@@ -1761,7 +1751,7 @@ public class MarieSim extends JFrame {
                        symbolTable = null;
                   } // windowClosing()
               }); // Listener 
-              symbolTable.show();
+              symbolTable.setVisible(true);
      }
   } // displaySymbolTable() 
 
@@ -1771,7 +1761,7 @@ public class MarieSim extends JFrame {
 *  This method works the same way as displayDelayFrame().  See explanation above.         *
 ******************************************************************************************/
      try {
-           helpViewer.show();
+           helpViewer.setVisible(true);
            helpViewer.requestFocus();
      }
      catch (Exception e) {         
@@ -1783,7 +1773,7 @@ public class MarieSim extends JFrame {
                        helpViewer = null;
                   } // windowClosing()
               }); // Listener 
-              helpViewer.show();
+              helpViewer.setVisible(true);
      }
   } // displayHelpFrame()
 
@@ -2088,7 +2078,7 @@ public class MarieSim extends JFrame {
     dumpViewer = new TextFileViewer("Core Dump", mexFile+DMP_TYPE, false);
     dumpViewer.setSize(600, 400);
     dumpViewer.setLocation(150, 40);
-    dumpViewer.show();
+    dumpViewer.setVisible(true);
   } // produceCoreDump()
 
 /* ------------------------------------------------------------------------------------- */
@@ -2384,6 +2374,7 @@ public class MarieSim extends JFrame {
      if (stepping) {
        setStatusMessage(" Press [Step] to start.");
        step.setEnabled(true);
+       step.repaint(); 
      }
      else {
         setStatusMessage("  Press [Run] to start.");
@@ -2560,6 +2551,10 @@ public class MarieSim extends JFrame {
                 break;
        case 12: jumpI();
                 break;
+       case 13: loadI();
+                break;
+       case 14: storeI();
+                break;         
       default:
         fatalError = true;
         errorCode = 1;
@@ -2572,12 +2567,22 @@ public class MarieSim extends JFrame {
 *   Jump and Store: Store PC at address [MAR] and set PC (jump) to address [MAR]+1.       *
 *   (This instruction can be used to create subroutines in MARIE assembly language.)      *
 ******************************************************************************************/
-     int addr = regMAR.getValue();
-     int memoryRow = addr / 16;
-     int memoryCol = addr % 16 + 1;
+     int memoryRow, memoryCol, addr;
+     
+     regMBR.setValue(regPC.getValue());
+     addr = regIR.getValue();
+     addr = addr & 0x0FFF;        // Strip the opcode from the instruction,
+     regMAR.setValue(addr);       // leaving the address.
+     
+     memoryRow = addr / 16;
+     memoryCol = addr % 16 + 1;
      try {
-       memoryArray[memoryRow][memoryCol] = " "+to4CharHexStr(regPC.getValue());
-       regPC.setValue(regMAR.getValue()+1);
+       memoryArray[memoryRow][memoryCol] = " "+to4CharHexStr(regMBR.getValue());
+       regMBR.setValue(regMAR.getValue());
+       regAC.setValue(regMBR.getValue()+1);
+       regPC.setValue(regAC.getValue());
+       regMBR.postActionEvent();
+       regAC.postActionEvent();
        regPC.postActionEvent();
      }
      catch (ArrayIndexOutOfBoundsException e) {
@@ -2601,9 +2606,6 @@ public class MarieSim extends JFrame {
 /******************************************************************************************
 *   Store whatever is in the accumulator to the address specified in the MAR              *
 *   by first moving it to the MBR.                                                        *
-*   We have to make sure that the value is stored as a 4-char hex string, no              *
-*   matter what the current rendering/mode of the MBR, so we don't just use the           *
-*   current rendering, which could be in any radix mode.                                  *
 ******************************************************************************************/
      int memoryRow, memoryCol;
      regMBR.setValue(regAC.getValue());
@@ -2705,9 +2707,14 @@ public class MarieSim extends JFrame {
 *   mode of the output register.                                                          *
 ******************************************************************************************/
      regOUTPUT.setValue(regAC.getValue());
+     String outStr = regOUTPUT.toString().trim(); // Put the OUT reg into a string so 
+						  // we can manipulate it.
+     if (outStr.length() == 0)                    // If the value is a whitespace,
+       outStr = regOUTPUT.toString().substring(4, 5); // keep the whitespace char.
+                                                  // Otherwise we lose our spaces!
      outputStream.addElement(new Integer(regOUTPUT.getValue()));
-     if (regOUTPUT.toString() != null)
-       outputArea.append(regOUTPUT.toString().trim());
+     if (regOUTPUT.toString() != null) 
+       outputArea.append(outStr);
      if (outputWithLinefeed)
        outputArea.append(linefeed);
      else
@@ -2725,6 +2732,8 @@ public class MarieSim extends JFrame {
 *   a string from the errorMessage array so that it can be displayed.                     *
 ******************************************************************************************/
     step.setEnabled(false);
+    stepping = false;
+          
     runStop.setEnabled(false);
     if (fatalError) {
        machineState = MARIE_HALTED_ABNORMAL;
@@ -2828,6 +2837,64 @@ public class MarieSim extends JFrame {
      regPC.postActionEvent();
    } // jumpI()
 
+
+  void loadI() { 
+/******************************************************************************************
+*   loadI loads into the accumulator the value that is found in memory at the location    *
+*   pointed to by the memory address in the MBR. We thus get the address of the value     *
+*   to be loaded and put it in the MAR. This address is then used to retrieve the         *
+*   actual value to be loaded, which happens using a call to the laod() method.           *
+******************************************************************************************/
+     int memoryRow, memoryCol;
+     
+     regMAR.setValue(regMBR.getValue());
+     if (fatalError) {
+       return;
+     }
+     int addr = regMAR.getValue();
+     memoryRow = addr / 16;
+     memoryCol = addr % 16 + 1;
+     try {
+           regMBR.setValue(" "+memoryArray[memoryRow][memoryCol]); 
+           regMAR.postActionEvent();
+           regMBR.postActionEvent();
+           load();
+     }
+     catch (ArrayIndexOutOfBoundsException e) {
+             errorCode = 3;
+             fatalError = true;
+             return;
+     }
+   } // loadI()
+
+  void storeI() { 
+/******************************************************************************************
+*   storeI stores the value in the accumulator to the memory address located at the       *
+*   address pointed to by the operand of the instruction. This msans that we have to      *
+*   first retreive the value stored at the location pointed to by the operand and then    *
+*   use that address to store the value that's in the accumulator.                        *
+******************************************************************************************/
+     int memoryRow, memoryCol;
+     
+     regMAR.setValue(regMBR.getValue());   // MBR contains the operand.
+     if (fatalError) {
+       return;
+     }
+     int addr = regMAR.getValue();        // The operand is the address of the 
+     memoryRow = addr / 16;               // value that is the address of where
+     memoryCol = addr % 16 + 1;           // we will store the contents AC. 
+     try {
+           regMBR.setValue(" "+memoryArray[memoryRow][memoryCol]); 
+           regMAR.postActionEvent();
+           regMBR.postActionEvent();      // MBR now contains the address we need.
+           store();                       // So store the value in the AC.
+         }  
+     catch (ArrayIndexOutOfBoundsException e) {
+             errorCode = 3;
+             fatalError = true;
+     }
+   
+   } // storeI()
 
 /* --                                                                                 -- */
 /* --  Marie execution control methods.                                               -- */
@@ -2938,6 +3005,6 @@ public class MarieSim extends JFrame {
 
   public static void main(String args[]) {
     MarieSim sim = new MarieSim();
-    sim.show();
+    sim.setVisible(true);
   }
 } // MarieSim

@@ -12,7 +12,7 @@ You may use spaces instead if you wish.
 The format of a MARIE assembly language source 
 statement is:
 
-  [<label>,] operator [operand] [/<comment>]
+  [&lt;label&gt;,] operator [operand] [&lt;comment&gt;]
 
 where the statement label <label> is comma-delimited 
 and optional, and comments <comment> are delimited by 

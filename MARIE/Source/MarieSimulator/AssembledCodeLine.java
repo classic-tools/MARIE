@@ -15,6 +15,9 @@ public class AssembledCodeLine implements Serializable {
 * the final assembly step, this output file is read and used to produce the listing and   *
 * Marie "machine code" file .                                                             *
 ******************************************************************************************/
+  private static final long serialVersionUID = 030000L; // MarieSim Version 03.00.00 Use
+                                   // serialVersionUID declared to allow sharing of .mex 
+                                   // files between different instances of MarieSim.
   public String lineNo = "     ",  // All of the principal fields are initialized to blanks
           hexCode      = " ",      // to make report formatting easier later.
           operand      = " ",

@@ -285,7 +285,7 @@ void printContent() {
 *  needing to supply a TextFileViewer object instance.  See above for more detail.        *
 ******************************************************************************************/
     TextFileViewer tfv = new TextFileViewer(frameTitle, aTextFile, exitMode);
-    tfv.show();
+    tfv.setVisible(true);
   } // showFile()
 
   public static void main(String args[]) {
@@ -300,6 +300,6 @@ void printContent() {
       } // endif
     TextFileViewer tfv = new TextFileViewer(args[0], args[1], true);
     tfv.validate();
-    tfv.show();
+    tfv.setVisible(true);
   } // main()
 } // TextFileViewer

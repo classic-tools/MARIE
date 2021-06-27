@@ -2,6 +2,7 @@
 // Author:      Julie Lobur
 // JDK Version: 1.3.1
 // Date:        November 9, 2001
+//              Updated Jan 7, 2007 (Replaced deprecated awt call.)
 // Notice:      This code may be freely used for noncommercial purposes.
 import MarieSimulator.MarieSim;
 /******************************************************************************************
@@ -11,6 +12,6 @@ import MarieSimulator.MarieSim;
 public class MarieSim1 {
   public static void main(String args[]) {
     MarieSim sim = new MarieSim();
-    sim.show();
+   sim.setVisible(true);
   }
 } // MarieSim1
