@@ -13,7 +13,6 @@ X,	DEC	20
 Y,	DEC	48
 Temp,	DEC	0
 Subr,	HEX	0	/ Store return address here.
-	Clear		/ Clear AC as it was modified by JnS.
 	Load	Temp	/ Actual subroutine to double numbers.
 	Add	Temp	/ AC now holds double the value of Temp.
 	JumpI	Subr	/ Return to calling code.

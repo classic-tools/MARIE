@@ -517,7 +517,7 @@ public class MarieSim extends JFrame {
   ImageIcon      logo = new ImageIcon();        // The picture for the label.
   
   JPanel    infoPanel = new JPanel();       // Information panel.
-  JLabel  pgmTitle = new JLabel("MARIE Machine Simulator - Version 1.2");
+  JLabel  pgmTitle = new JLabel("MARIE Machine Simulator - Version 1.3.01");
   JLabel copyRight = new JLabel("Copyright (c) 2003, 2006");
   JLabel accompany = new JLabel("To accompany:");
   JLabel   theBook = new JLabel("The Essentials of Computer Organization and Architecture 2/e  ");
@@ -2468,9 +2468,9 @@ public class MarieSim extends JFrame {
     int addr = regMAR.getValue();                // seen on the screen, but we do it this
     memoryRow = addr / 16;                       // way because it's how the fetch-execute
     memoryCol = addr % 16 + 1;                   // process works.
-    try {                                                              // Pull instruction
-      regMBR.setValue((" "+(String) memoryArray[memoryRow][memoryCol]).trim()); // from memory 
-      regMBR.postActionEvent();                                        // into MBR.
+    try {                                                             // Pull instruction
+      regIR.setValue((" "+(String) memoryArray[memoryRow][memoryCol]).trim()); // from memory 
+      regIR.postActionEvent();                                        // into IR.
     }
     catch (ArrayIndexOutOfBoundsException e) {
              errorCode = 3;
@@ -2483,8 +2483,6 @@ public class MarieSim extends JFrame {
       Rectangle rect = programTable.getCellRect(programFocusRow, 5, false);
       programTable.scrollRectToVisible(rect);
     }
-    regIR.setValue(regMBR.getValue());           // Copy MBR contents into IR.
-    regIR.postActionEvent();
     aString = regIR.toString().trim();
     try {
        instructionCode = Integer.parseInt(aString.substring(0,1), 16);
